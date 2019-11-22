@@ -1,10 +1,51 @@
 'use strict';
 
 var setupBlock = document.querySelector('.setup');
-setupBlock.classList.remove('hidden');
-
+var setupOpenBotton = document.querySelector('.setup-open');
+var setupCloseButton = document.querySelector('.setup-close');
 var setupSimilar = document.querySelector('.setup-similar');
 setupSimilar.classList.remove('hidden');
+
+// Логира работы попапа и кода. Тут описывается логика открытия окна и его закрытие. Обработчики события существуют отдельно от кода, который описывает поведение попапа, это хорошая практика, потому что если это все смешать то логика работы попапа и логика обработки события будут перемешаны и функции станет читать сложно и не удобно редактировать.
+
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
+
+function onPopupEscPress(evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closePopup();
+  }
+}
+
+function openPopup() {
+  setupBlock.classList.remove('hidden');
+  document.addEventListener('keydown', onPopupEscPress);
+}
+
+function closePopup() {
+  setupBlock.classList.add('hidden');
+  document.removeEventListener('keydown', onPopupEscPress);
+}
+
+setupOpenBotton.addEventListener('click', function () {
+  openPopup();
+});
+
+setupOpenBotton.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    openPopup();
+  }
+});
+
+setupCloseButton.addEventListener('click', function () {
+  closePopup();
+});
+
+setupCloseButton.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closePopup();
+  }
+});
 
 var WIZARDS_NAME = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
 var WIZARDS_LASTNAME = ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'];
