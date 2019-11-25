@@ -17,36 +17,6 @@ function checkScript() {
         forms[i].setAttribute('novalidate', true);
     }
 
-    document.addEventListener('blur', function(evt) {
-        if (!evt.target.form.classList.contains('novalidate')) return;
-        var error = hasError(evt.target);
-        if (error) {
-            showError(evt.target, error);
-            return;
-        }
-        removeError(evt.target);
-    }, true);
-
-    document.addEventListener('submit', function(evt) {
-        if (!event.target.classList.contains('novalidate')) return;
-        var fields = evt.target.elements;
-        console.log(fields);
-        var error, hasErrors;
-        for (var i = 0; i < fields.length; i++) {
-            error = hasError(fields[i]);
-            if (error) {
-                showError(fields[i], error);
-                if (!hasErrors) {
-                    hasErrors = fields[i];
-                }
-            }
-        }
-        if (hasErrors) {
-            evt.preventDefault();
-            hasErrors.focus();
-        }
-    }, false);
-
     function hasError(field) {
         if (field.disabled || field.type === 'file' || field.type === 'reset' || field.type === 'submit' || field.type === 'button') {
             return;
@@ -98,6 +68,42 @@ function checkScript() {
         message.style.display = 'none';
         message.style.visibility = 'hidden';
     }
+
+    function fieldBlurHandler(evt) {
+        if (!evt.target.form.classList.contains('novalidate')) {
+            return;
+        }
+        var error = hasError(evt.target);
+        if (error) {
+            showError(evt.target, error);
+            return;
+        }
+        removeError(evt.target);
+    }
+
+    function submitButtonHandler(evt) {
+        if (!event.target.classList.contains('novalidate')) return;
+        var fields = evt.target.elements;
+        console.log(fields);
+        var error, hasErrors;
+        for (var i = 0; i < fields.length; i++) {
+            error = hasError(fields[i]);
+            if (error) {
+                showError(fields[i], error);
+                if (!hasErrors) {
+                    hasErrors = fields[i];
+                }
+            }
+        }
+        if (hasErrors) {
+            evt.preventDefault();
+            hasErrors.focus();
+        }
+    }
+
+    document.addEventListener('submit', submitButtonHandler, false);
+
+    document.addEventListener('blur', fieldBlurHandler, true);
 }
 
 checkScript();
