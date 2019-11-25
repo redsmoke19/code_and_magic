@@ -7,6 +7,8 @@ var setupCloseButton = document.querySelector('.setup-close');
 var setupSimilar = document.querySelector('.setup-similar');
 setupSimilar.classList.remove('hidden');
 
+// setupBlock.classList.remove('hidden');
+
 // Валидация формы, а именно поля ввода имени input
 
 function checkScript() {
@@ -14,10 +16,88 @@ function checkScript() {
     for (var i = 0; i < forms.length; i++) {
         forms[i].setAttribute('novalidate', true);
     }
+
     document.addEventListener('blur', function(evt) {
-        var error = evt.target.validity;
-        console.log(error);
+        if (!evt.target.form.classList.contains('novalidate')) return;
+        var error = hasError(evt.target);
+        if (error) {
+            showError(evt.target, error);
+            return;
+        }
+        removeError(evt.target);
     }, true);
+
+    document.addEventListener('submit', function(evt) {
+        if (!event.target.classList.contains('novalidate')) return;
+        var fields = evt.target.elements;
+        console.log(fields);
+        var error, hasErrors;
+        for (var i = 0; i < fields.length; i++) {
+            error = hasError(fields[i]);
+            if (error) {
+                showError(fields[i], error);
+                if (!hasErrors) {
+                    hasErrors = fields[i];
+                }
+            }
+        }
+        if (hasErrors) {
+            evt.preventDefault();
+            hasErrors.focus();
+        }
+    }, false);
+
+    function hasError(field) {
+        if (field.disabled || field.type === 'file' || field.type === 'reset' || field.type === 'submit' || field.type === 'button') {
+            return;
+        }
+        var validity = field.validity;
+        if (validity.valid) {
+            return;
+        }
+        if (validity.valueMissing) return 'Пожалуйста, заполните это поле. Оно обязательное';
+        if (validity.typeMismatch) {
+            if (field.type === 'email') return 'Пожалуйста, введите верное значение почты';
+            if (field.type === 'url') return 'Пожалуйста, введите правильный адрес ссылки';
+        }
+        if (validity.tooShort) return 'Длинна имени должна быть не менее ' + field.getAttribute('minLength') + ' символов. Вы ввели ' + field.value.length + ' символа.';
+        if (validity.tooLong) return 'Длинна имени должна быть не более ' + field.getAttribute('mmaxLength') + ' символов. Вы ввели ' + field.value.length + ' символа.';
+        if (validity.badInput) return 'Пожалуйста, введите число';
+        if (validity.stepMismatch) return 'Указано не верное значение';
+        if (validity.rangeOverflow) return 'Введенное значение слишком велико';
+        if (validity.rangeUnderflow) return 'Введенное значение слишком мало';
+        if (validity.patternMismatch) return 'неверный формат';
+        return 'Введенное значение не верно';
+    }
+
+    function showError(field, error) {
+        field.classList.add('error');
+        var id = field.id;
+        if (!id) return;
+        var message = field.form.querySelector('.error-message#error-for-' + id);
+        if (!message) {
+            message = document.createElement('div');
+            message.className = 'error-message';
+            message.id = 'error-for-' + id;
+            field.parentNode.insertBefore(message, field.nextSibling);
+        }
+        field.setAttribute('aria-describedby', 'error-for-' + id);
+        message.innerHTML = error;
+        message.style.display = 'block';
+        message.style.visibility = 'visible';
+    }
+
+    function removeError(field) {
+        field.classList.remove('error');
+        field.removeAttribute('aria-describedby');
+        var id = field.id;
+        if (!id) return;
+        var message = field.form.querySelector('.error-message#error-for-' + id + '');
+        if (!message) return;
+        message.innerHTML = '';
+        message.style.display = 'none';
+        message.style.visibility = 'hidden';
+    }
 }
 
 checkScript();

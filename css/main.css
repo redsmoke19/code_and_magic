@@ -566,9 +566,10 @@ input[type=radio]:checked+.review-mark-label {
     border: 0;
 }
 
-.setup-user-name:invalid {
+
+/* .setup-user-name:invalid {
     border: 2px solid red;
-}
+} */
 
 .setup-user-name:focus {
     border-bottom: solid 1px #000;
@@ -576,7 +577,8 @@ input[type=radio]:checked+.review-mark-label {
 }
 
 .setup-close {
-    float: right;
+    /* float: right;*/
+    position: absolute;
     top: 20px;
     right: 20px;
     font-size: 70px;
@@ -776,7 +778,13 @@ input[type=radio]:checked+.review-mark-label {
     top: 0;
 }
 
+.error {
+    border: 1px solid red;
+}
+
 .error-message {
-    padding: 0 0 0 50px;
+    color: red;
+    font-style: italic;
+    padding: 0 160px 0 50px;
     margin: 20px 0 0 0;
 }
