@@ -31,7 +31,7 @@ function checkScript() {
             if (field.type === 'url') return 'Пожалуйста, введите правильный адрес ссылки';
         }
         if (validity.tooShort) return 'Длинна имени должна быть не менее ' + field.getAttribute('minLength') + ' символов. Вы ввели ' + field.value.length + ' символа.';
-        if (validity.tooLong) return 'Длинна имени должна быть не более ' + field.getAttribute('mmaxLength') + ' символов. Вы ввели ' + field.value.length + ' символа.';
+        if (validity.tooLong) return 'Длинна имени должна быть не более ' + field.getAttribute('maxLength') + ' символов. Вы ввели ' + field.value.length + ' символа.';
         if (validity.badInput) return 'Пожалуйста, введите число';
         if (validity.stepMismatch) return 'Указано не верное значение';
         if (validity.rangeOverflow) return 'Введенное значение слишком велико';
@@ -84,7 +84,6 @@ function checkScript() {
     function submitButtonHandler(evt) {
         if (!event.target.classList.contains('novalidate')) return;
         var fields = evt.target.elements;
-        console.log(fields);
         var error, hasErrors;
         for (var i = 0; i < fields.length; i++) {
             error = hasError(fields[i]);
@@ -182,8 +181,8 @@ setupCloseButton.addEventListener('keydown', function(evt) {
 var WIZARDS_NAME = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
 var WIZARDS_LASTNAME = ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'];
 var WIZADRS_COLOR = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
-var WIZADRS_EYE = ['black', 'red', 'blue', 'yellow', 'green'];
-var WIZADRS_HAND = ['black', 'red', 'blue', 'yellow', 'green'];
+var WIZADRS_COLOR_PARTS = ['black', 'red', 'blue', 'yellow', 'green'];
+var WIZARD_COLOR_FIREBALL = ['ee4830', '30a8ee', '5ce6c0', 'e848d5', 'e6e848'];
 
 // Получаем случайное число от 0 до n (где n - это длинна массива)
 function randomInt(n) {
@@ -202,8 +201,8 @@ function getWizards() {
         var wizard = {
             name: randomElement(WIZARDS_NAME) + ' ' + randomElement(WIZARDS_LASTNAME),
             coatColor: randomElement(WIZADRS_COLOR),
-            eyesColor: randomElement(WIZADRS_EYE),
-            handColor: randomElement(WIZADRS_HAND)
+            eyesColor: randomElement(WIZADRS_COLOR_PARTS),
+            handColor: randomElement(WIZADRS_COLOR_PARTS)
         };
         wizardsArray.push(wizard);
     }
@@ -235,3 +234,35 @@ for (var i = 0; i < wizards.length; i++) {
 
 // Передал фрагмент в котором храняться все волшебники в список для отрисовки их на странице
 similarListElement.appendChild(fragment);
+
+//Поиск элементов одежды мага
+var inputCoat = document.querySelector('.wizard .wizard-coat');
+var inputEyes = document.querySelector('.wizard .wizard-eyes');
+var inputFireBall = document.querySelector('.setup-fireball-wrap');
+
+//Функция изменения цвета глаз при клике на них
+function getColor() {
+    function inputColorCoatHandler() {
+        var coatColor = randomElement(WIZADRS_COLOR);
+        inputCoat.style.fill = coatColor;
+        document.querySelector('input[name="coat-color"]').value = coatColor;
+        console.log(document.querySelector('input[name="coat-color"]'));
+    }
+
+    function inputColorEyesHandler() {
+        var eyeColor = randomElement(WIZADRS_COLOR_PARTS);
+        inputEyes.style.fill = eyeColor;
+        document.querySelector('input[name="eyes-color"]').value = eyeColor;
+    }
+
+    function inputColorFireballHandler() {
+        var fireballColor = '#' + randomElement(WIZARD_COLOR_FIREBALL);
+        inputFireBall.style.background = fireballColor;
+        document.querySelector('input[name="fireball-color"]').value = fireballColor;
+    }
+    inputCoat.addEventListener('click', inputColorCoatHandler);
+    inputEyes.addEventListener('click', inputColorEyesHandler);
+    inputFireBall.addEventListener('click', inputColorFireballHandler);
+}
+
+getColor();
