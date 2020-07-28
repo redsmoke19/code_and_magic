@@ -258,6 +258,16 @@ let onError = function(message) {
 
 window.load(onLoad, onError);
 
+//Отправка формы и закрытие ее
+
+let form = document.querySelector('.setup-wizard-form');
+form.addEventListener('submit', function (evt) {
+  window.save(new FormData(form), function(response) {
+    closePopup();
+  });
+  evt.preventDefault();
+});
+
 //Поиск элементов одежды мага
 var inputCoat = document.querySelector('.wizard .wizard-coat');
 var inputEyes = document.querySelector('.wizard .wizard-eyes');
